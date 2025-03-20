@@ -4371,12 +4371,12 @@ namespace AmandsController
             Vector2 vector = rectTransform.InverseTransformPoint((Vector2)itemView.transform.position + new Vector2(0f,-64f));
             vector += b;
 
-            object gstruct23 = CalculateRotatedSize.Invoke(itemView.Item, new object[1] { itemView.ItemRotation });
+            object XYCellSizeStruct = CalculateRotatedSize.Invoke(itemView.Item, new object[1] { itemView.ItemRotation });
 
             vector /= 63f;
             vector.y = (float)GridHeight - vector.y;
 
-            vector.y -= (float)Traverse.Create(gstruct23).Field("Y").GetValue<int>();
+            vector.y -= (float)Traverse.Create(XYCellSizeStruct).Field("Y").GetValue<int>();
 
             return new Vector2Int(Mathf.Clamp(Mathf.RoundToInt(vector.x), 0, GridWidth), Mathf.Clamp(Mathf.RoundToInt(vector.y), 0, GridHeight));
         }
