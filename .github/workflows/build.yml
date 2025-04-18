@@ -10,12 +10,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install SFML (Windows)
-      run: |
-        # 这里可以下载 SFML 并设置环境变量
-        # 例如：choco install sfml（如果 SFML 在 Chocolatey 里）
+    - name: Find MSBuild path
+      id: msbuild
+      uses: microsoft/setup-msbuild@v1  # 专门用于设置 msbuild 的 GitHub Action
 
     - name: Build with MSBuild
       run: |
-        # 使用 Visual Studio 自带的 MSBuild 编译 .sln
+        # 确保 .sln 文件存在（如果不在根目录，替换为正确路径）
+        ls *.sln
+        # 使用 msbuild 编译
         msbuild AmandsController.sln /p:Configuration=Release
