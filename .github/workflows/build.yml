@@ -1,28 +1,26 @@
-name: CMake Build
+name: Windows Build
 
 on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: windows-latest  # 或 ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install dependencies (Windows)
-      if: runner.os == 'Windows'
+    - name: Install SFML
       run: |
-        choco install sfml -y  # 使用 Chocolatey 安装 SFML
-        choco install cmake -y
+        curl -L -o sfml.zip https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc17-64-bit.zip
+        mkdir sfml
+        tar -xf sfml.zip -C sfml --strip-components=1
+        echo "SFML_DIR=$PWD/sfml" >> $GITHUB_ENV
 
-    - name: Install dependencies (Linux)
-      if: runner.os == 'Linux'
+    - name: Configure CMake
       run: |
-        sudo apt-get update
-        sudo apt-get install -y cmake libsfml-dev g++
+        cmake -B build -S . -DSFML_DIR=${{ env.SFML_DIR }}
 
     - name: Build
       run: |
-        cmake -B build -S .
-        cmake --build build
+        cmake --build build --config Release
