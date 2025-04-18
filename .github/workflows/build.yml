@@ -1,0 +1,35 @@
+name: CMake Build
+
+on:
+  push:
+    branches: [ "main" ]  # 触发构建的分支（默认是 main）
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # 使用 Ubuntu 系统（也支持 windows/macos）
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4  # 拉取代码
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake g++ libsfml-dev  # 安装 CMake、G++ 和 SFML（根据项目实际依赖调整）
+
+    - name: Create build directory
+      run: mkdir -p build
+
+    - name: Configure CMake
+      working-directory: ./build
+      run: cmake ..  # 生成 Makefile
+
+    - name: Build
+      working-directory: ./build
+      run: cmake --build .  # 编译项目
+
+    - name: Run tests (可选)
+      working-directory: ./build
+      run: ./AmandsController  # 如果有可执行文件，可以运行测试
