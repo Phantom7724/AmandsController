@@ -1,28 +1,21 @@
-name: CMake Build
+name: Windows Build
 
 on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest  # 使用 Windows 环境
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # 确保拉取完整代码
 
-    - name: Install dependencies
+    - name: Install SFML (Windows)
       run: |
-        sudo apt-get update
-        sudo apt-get install -y cmake g++ libsfml-dev
+        # 这里可以下载 SFML 并设置环境变量
+        # 例如：choco install sfml（如果 SFML 在 Chocolatey 里）
 
-    - name: Configure CMake
-      run: cmake -B build -S .
-      working-directory: ${{ github.workspace }}  # 关键修复：强制使用根目录
-
-    - name: Build
-      run: cmake --build build
-
-    - name: Run executable (optional)
-      run: ./build/AmandsController  # 如果生成可执行文件
+    - name: Build with MSBuild
+      run: |
+        # 使用 Visual Studio 自带的 MSBuild 编译 .sln
+        msbuild AmandsController.sln /p:Configuration=Release
