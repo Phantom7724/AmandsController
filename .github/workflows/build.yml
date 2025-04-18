@@ -1,22 +1,28 @@
-name: Windows Build
+name: CMake Build
 
 on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: windows-latest  # 使用 Windows 环境
+    runs-on: windows-latest  # 或 ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Find MSBuild path
-      id: msbuild
-      uses: microsoft/setup-msbuild@v1  # 专门用于设置 msbuild 的 GitHub Action
-
-    - name: Build with MSBuild
+    - name: Install dependencies (Windows)
+      if: runner.os == 'Windows'
       run: |
-        # 确保 .sln 文件存在（如果不在根目录，替换为正确路径）
-        ls *.sln
-        # 使用 msbuild 编译
-        msbuild AmandsController.sln /p:Configuration=Release
+        choco install sfml -y  # 使用 Chocolatey 安装 SFML
+        choco install cmake -y
+
+    - name: Install dependencies (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake libsfml-dev g++
+
+    - name: Build
+      run: |
+        cmake -B build -S .
+        cmake --build build
