@@ -9,6 +9,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # 确保拉取完整代码
 
     - name: Install dependencies
       run: |
@@ -16,7 +18,8 @@ jobs:
         sudo apt-get install -y cmake g++ libsfml-dev
 
     - name: Configure CMake
-      run: cmake -B build -S .  # 关键修复：显式指定源码和构建目录
+      run: cmake -B build -S .
+      working-directory: ${{ github.workspace }}  # 关键修复：强制使用根目录
 
     - name: Build
       run: cmake --build build
